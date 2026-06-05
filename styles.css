@@ -68,7 +68,13 @@ body {
   border-radius: 0.5rem;
   border-color: #383847;
   background-color: #1c1c2b;
+  transition: all 0.25s ease;
+}
 
+.link:hover {
+  background-color: #0e0125; 
+  color: #3cb7f0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 375px) {
