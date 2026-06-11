@@ -36,15 +36,16 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Noise texture overlay */
+    /* FIX 3: Noise en el fondo del body/main — SVG fractalNoise más denso y visible */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 0;
-      opacity: 0.6;
+      opacity: 1;
+      mix-blend-mode: overlay;
     }
 
     /* Ambient glow blobs */
@@ -53,9 +54,9 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(93,241,216,0.04) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 80% 80%, rgba(93,241,216,0.03) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,80,30,0.03) 0%, transparent 60%);
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(93,241,216,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 80%, rgba(93,241,216,0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,80,30,0.04) 0%, transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
@@ -73,10 +74,11 @@
     }
 
     /* ─── Avatar ─── */
+    /* FIX 1: margin-bottom muy negativo para que el avatar quede mitad dentro, mitad fuera de la card */
     .avatar-wrap {
       display: flex;
       justify-content: center;
-      margin-bottom: -28px;
+      margin-bottom: -68px;
       position: relative;
       z-index: 2;
     }
@@ -85,9 +87,9 @@
       width: 130px;
       height: 130px;
       border-radius: 50%;
-      padding: 1%;
+      padding: 3px;
       background: linear-gradient(135deg, var(--accent), transparent 60%);
-      box-shadow: 0 0 24px rgba(93,241,216,0.2);
+      box-shadow: 0 0 32px rgba(93,241,216,0.25), 0 0 0 1px rgba(93,241,216,0.08);
     }
 
     .avatar-ring img {
@@ -100,11 +102,12 @@
     }
 
     /* ─── Hero Card ─── */
+    /* padding-top mayor para dar espacio al avatar que sobresale */
     .hero-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 44px 28px 32px;
+      padding: 76px 28px 32px;
       text-align: center;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -121,20 +124,28 @@
     }
 
     .meta-pills {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
     }
 
     .pill {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       font-size: 11px;
       font-weight: 400;
       color: rgba(255,255,255,0.5);
       letter-spacing: 0.04em;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 5px 10px;
+      backdrop-filter: blur(8px);
     }
 
     .pill svg { flex-shrink: 0; opacity: 0.6; }
@@ -247,7 +258,6 @@
       width: 100%;
     }
 
-    /* ── Uiverse-style: wrapper carries the gradient border + blur glow ── */
     .link-btn {
       display: flex;
       flex-direction: column;
@@ -263,7 +273,6 @@
     .link-btn:active { transform: translateY(-1px); }
     .link-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 50%; }
 
-    /* The gradient-border container — mirrors .container from the snippet */
     .link-icon-wrap {
       position: relative;
       padding: 2px;
@@ -273,7 +282,6 @@
       box-shadow: 2px 2px 6px rgba(0,0,0,0.6);
     }
 
-    /* Blur glow behind — mirrors .container::before */
     .link-icon-wrap::before {
       content: '';
       position: absolute;
@@ -285,17 +293,14 @@
       transition: filter 0.4s ease;
     }
 
-    /* On hover: the glow blooms outward */
     .link-btn:hover .link-icon-wrap::before {
       filter: blur(10px);
     }
 
-    /* On active: glow snaps tight */
     .link-btn:active .link-icon-wrap::before {
       filter: blur(2px);
     }
 
-    /* Inner circle — mirrors button inside .container */
     .link-icon {
       width: 58px;
       height: 58px;
@@ -331,7 +336,9 @@
     /* ─── Responsive ─── */
     @media (min-width: 480px) {
       .page { padding: 60px 32px 100px; gap: 24px; }
-      .avatar-ring { width: 150px; height: 150px; }
+      .avatar-ring { width: 140px; height: 140px; }
+      .avatar-wrap { margin-bottom: -72px; }
+      .hero-card { padding-top: 84px; }
       .link-icon { width: 64px; height: 64px; }
     }
 
@@ -351,8 +358,8 @@
         <img
           src="foto gianca cuzco.jpg"
           alt="Gian Carlos Chavez Sanchez"
-          width="108"
-          height="108"
+          width="130"
+          height="130"
         />
       </div>
     </div>
@@ -407,10 +414,13 @@
           <span class="link-label">Email</span>
         </a>
 
+        <!-- FIX 2: Behance icon corregido con path preciso y legible -->
         <a class="link-btn" href="https://www.behance.net/GianCa" target="_blank" rel="noopener noreferrer" aria-label="Ver portafolio en Behance">
           <span class="link-icon-wrap">
             <span class="link-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.051-1.786-5.051-5.25 0-3.369 1.977-5.558 5.001-5.558 2.658 0 4.705 1.555 5.129 4.366.069.471.099 1.1.072 1.442H15.7c.15 1.838 1.178 2.454 2.493 2.454.766 0 1.376-.286 1.8-.871l2.733.417zM15.7 14.5h4.126c-.076-1.369-.937-1.967-2.03-1.967-1.185 0-1.916.62-2.096 1.967zM9.002 14.702c1.06.364 1.698 1.108 1.698 2.198C10.7 18.37 9.395 19 7.498 19H3V5h4.302c1.83 0 3.1.613 3.1 2.382 0 .964-.481 1.733-1.4 2.098v.045c1.022.29 1.606 1.02 1.606 2.177zM5.498 7h1.7c.82 0 1.302-.434 1.302-1.127C8.5 5.24 7.97 4.9 7.2 4.9h-1.7V7zm0 6.6h1.8c1.12 0 1.702-.487 1.702-1.3 0-.801-.616-1.3-1.7-1.3h-1.8v2.6z"/></svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6.938 4.503c.702 0 1.34.06 1.92.188.577.13 1.07.33 1.485.61.41.28.733.65.96 1.12.225.47.34 1.05.34 1.73 0 .74-.17 1.36-.507 1.86-.338.5-.837.9-1.502 1.22.906.26 1.576.72 2.022 1.37.448.65.673 1.43.673 2.36 0 .74-.14 1.38-.42 1.92-.28.55-.67 1-.16 1.36-.49.36-1.06.63-1.7.8-.64.17-1.32.25-2.03.25H0V4.503h6.938zm-.34 5.65c.585 0 1.063-.14 1.433-.42.37-.28.555-.73.555-1.33 0-.332-.06-.608-.18-.83-.12-.22-.29-.4-.5-.53-.21-.13-.45-.22-.72-.27-.27-.05-.56-.07-.86-.07H3.5v3.45h3.098zm.166 5.96c.334 0 .645-.03.93-.1.285-.067.535-.173.75-.317.215-.144.384-.334.507-.57.123-.236.184-.53.184-.88 0-.702-.196-1.21-.588-1.527-.392-.316-.91-.474-1.554-.474H3.5v3.87h3.264zM16.498 5.05h5.52v1.404h-5.52V5.05zm-1.305 5.44c.028-.96.29-1.73.79-2.32.5-.59 1.26-.89 2.27-.89.48 0 .92.07 1.31.22.39.15.72.36.99.64.27.28.48.62.62 1.02.14.4.21.85.21 1.34v.76H15.55c.04.68.24 1.2.6 1.56.36.36.87.54 1.52.54.48 0 .89-.11 1.23-.33.34-.22.56-.48.66-.77h1.9c-.3 1-.78 1.73-1.43 2.18-.65.46-1.43.69-2.36.69-.64 0-1.22-.1-1.74-.32-.52-.21-.96-.51-1.32-.9-.36-.39-.64-.85-.83-1.39-.19-.54-.29-1.14-.29-1.79v-.24zm4.89-.72c-.08-.58-.27-1.02-.57-1.33-.3-.3-.73-.46-1.27-.46-.35 0-.65.06-.9.18-.25.12-.46.28-.63.48-.17.2-.29.42-.38.67-.09.25-.14.5-.15.76h3.9v-.3z"/>
+              </svg>
             </span>
           </span>
           <span class="link-label">Behance</span>
